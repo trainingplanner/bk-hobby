@@ -8,9 +8,26 @@
   <body>
     <div class="content">
       <h1>BK-Hobby</h1>
-      <p>
-        Trainingszeiten: Montags und Donnerstags, 20:30–22:00 Uhr
-      </p>
+      <p>Trainingszeiten: Montags und Donnerstags, 20:30–22:00 Uhr</p>
     </div>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBoCfldczofy7zX1vggeZuJlxwPJnxhNzg",
+        authDomain: "trainingplanner-e6529.firebaseapp.com",
+        projectId: "trainingplanner-e6529",
+        storageBucket: "trainingplanner-e6529.appspot.com",
+        messagingSenderId: "71748527010",
+        appId: "1:71748527010:web:d20957301849f69ed448fb",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+    </script>
   </body>
 </html>
