@@ -34,10 +34,16 @@
       const db = getDatabase(app);
 
       const dbRef = ref(getDatabase(app));
-      get(child(dbRef, "date/"))
+      get(child(dbRef, "bkh/date/"))
         .then((snapshot) => {
           if (snapshot.exists()) {
-            console.log(snapshot);
+            Object.keys(snapshot.val()).forEach((date) => {
+              // console.log(`Name: ${snapshot.val()[key].name}`);
+              // console.log(`Email: ${snapshot.val()[key].email}`);
+              // console.log(`Subject: ${snapshot.val()[key].subject}`);
+              // console.log(`Message: ${snapshot.val()[key].message}`);
+              console.log(snapshot.val()[date]);
+            });
           } else {
             console.log("No data available");
           }
