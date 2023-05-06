@@ -38,7 +38,7 @@
         .then((snapshot) => {
           if (snapshot.exists()) {
             Object.keys(snapshot.val()).forEach((date) => {
-              snapshot.val()[date].forEach((player) => {
+              snapshot.val()[date].child.forEach((player) => {
               console.info("hi");
                 console.info(player);
               });
