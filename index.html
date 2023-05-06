@@ -31,13 +31,20 @@
         appId: "1:636511129226:web:51fc3df29c0425ed3fe773",
       };
       const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
 
- //     const db = getDatabase(app);
-//      const server = ref("bk-hobby");
-  //    const setTime = ref.child("serverTime");
-   //   setTime.push({
-    //    timestamp: serverTimestamp(),
-     // });
+      const dbRef = ref(getDatabase(app));
+      get(child(dbRef, "date/"))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot);
+          } else {
+            console.log("No data available");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     </script>
   </body>
 </html>
