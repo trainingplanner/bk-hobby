@@ -38,11 +38,10 @@
         .then((snapshot) => {
           if (snapshot.exists()) {
             Object.keys(snapshot.val()).forEach((date) => {
-              // console.log(`Name: ${snapshot.val()[key].name}`);
-              // console.log(`Email: ${snapshot.val()[key].email}`);
-              // console.log(`Subject: ${snapshot.val()[key].subject}`);
-              // console.log(`Message: ${snapshot.val()[key].message}`);
-              console.log(snapshot.val()[date]);
+              date.keys.forEach((player) => {
+                console.log(player);
+              })
+              // console.log(snapshot.val()[date]);
             });
           } else {
             console.log("No data available");
