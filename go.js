@@ -1,3 +1,14 @@
+function snapshotToArray(snapshot) {
+    let arr = [];
+    snapshot.forEach(function(child) {
+        const item = child.val();
+        item.key = child.key;
+        arr.push(item);
+    });
+    return arr;
+};
+
+// setup firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
 import {
   getDatabase,
@@ -5,7 +16,6 @@ import {
   // set,
   get,
   child,
-  // serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
 const firebaseConfig = {
   apiKey: "AIzaSyDSo8kGYkbNnawCC8ZOaj6ZOqbLZXcksIQ",
@@ -17,16 +27,18 @@ const firebaseConfig = {
   messagingSenderId: "636511129226",
   appId: "1:636511129226:web:51fc3df29c0425ed3fe773",
 };
-const app = initializeApp(firebaseConfig);
-// const db = getDatabase(app);
 
+// load database
+const app = initializeApp(firebaseConfig);
 const dbRef = ref(getDatabase(app));
-get(child(dbRef, "bkh/date/"))
+get(child(dbRef, "bkh/"))
   .then((snapshot) => {
     if (snapshot.exists()) {
-      Object.keys(snapshot.val()).forEach((date) => {
-        snapshot.val()[date].iterator();
-      });
+      const dbArr = snapshotToArray(snapshot);
+      const dates = dbArr[0];
+      const players = dbArr[1];
+      console.info(dates);
+      console.info(players);
     } else {
       console.info("No data available");
     }
