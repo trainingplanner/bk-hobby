@@ -1,0 +1,28 @@
+/*
+colorscheme solarized light/dark
+☛ https://ethanschoonover.com/solarized/
+*/
+
+:root {
+  --colorMagenta: #d33682;
+  --colorGreen: #2aa198;
+  --colorYellow: #af8700;
+  --colorBlue: #268bd2;
+}
+body {
+  --colorFg: #586e75;
+  --colorBg: #fdf6e3;
+  --colorAc: #eee8d5;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    --colorFg: #93a1a1;
+    --colorBg: #002b36;
+    --colorAc: #073642;
+  }
+}
+
+body {
+  background: var(--colorBg);
+  color: var(--colorFg);
+}
