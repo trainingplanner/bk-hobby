@@ -1,19 +1,35 @@
+// Copyright (C) 2023 luetage <https://github.com/luetage>
+
+// This file is part of Trainingplanner.
+
+// Trainingplanner is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option) any
+// later version.
+
+// Trainingplanner is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+// more details.
+
+// You should have received a copy of the GNU General Public License along with
+// Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
+
 function snapshotToArray(snapshot) {
-    let arr = [];
-    snapshot.forEach(function(child) {
-        const item = child.val();
-        item.key = child.key;
-        arr.push(item);
-    });
-    return arr;
-};
+  let arr = [];
+  snapshot.forEach(function (child) {
+    const item = child.val();
+    arr.push(item);
+  });
+  return arr;
+}
 
 // setup firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
 import {
   getDatabase,
   ref,
-  // set,
+  set,
   get,
   child,
 } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
@@ -37,7 +53,11 @@ get(child(dbRef, "bkh/"))
       const dbArr = snapshotToArray(snapshot);
       const dates = dbArr[0];
       const players = dbArr[1];
-      console.info(dates);
+      Object.keys(dates).forEach((date) => {
+        const player = Object.keys(dates).map(item => item.player);
+        console.info(player);
+        console.info(date);
+      });
       console.info(players);
     } else {
       console.info("No data available");
