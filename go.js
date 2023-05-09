@@ -15,6 +15,24 @@
 // You should have received a copy of the GNU General Public License along with
 // Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
 
+function help() {
+  const intro = document.getElementById("intro");
+  const help = document.getElementById("help");
+  const iconIntro = document.getElementById("iconIntro");
+  const iconHelp = document.getElementById("iconHelp");
+  if (help.classList.contains("hidden")) {
+    intro.classList.add("hidden");
+    help.classList.remove("hidden");
+    iconHelp.classList.add("hidden");
+    iconIntro.classList.remove("hidden");
+  } else {
+    help.classList.add("hidden");
+    intro.classList.remove("hidden");
+    iconIntro.classList.add("hidden");
+    iconHelp.classList.remove("hidden");
+  }
+}
+
 function snapshotToArray(snapshot) {
   let arr = [];
   snapshot.forEach(function (child) {
@@ -54,8 +72,6 @@ get(child(dbRef, "bkh/"))
       const dates = dbArr[0];
       const players = dbArr[1];
       Object.keys(dates).forEach((date) => {
-        const player = Object.keys(dates).map(item => item.player);
-        console.info(player);
         console.info(date);
       });
       console.info(players);
@@ -66,3 +82,5 @@ get(child(dbRef, "bkh/"))
   .catch((error) => {
     console.error(error);
   });
+
+document.getElementById("helpToggle").addEventListener("click", help);

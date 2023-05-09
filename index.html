@@ -19,28 +19,37 @@ Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
 <!DOCTYPE html>
 <html>
   <head>
-    <script defer src="icons/solid.js"></script>
     <title>BK‐Hobby</title>
     <link rel="shortcut icon" type="image/png" href="icons/basketball.ico" />
     <link rel="stylesheet" href="style.css" />
+    <script defer src="icons/fontawesome.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
     <h1>
-      BK‐Hobby<i class="fa-solid fa-question-circle"></i>
-   </h1>
-    <div id="main">
-      <div class="text">
-        <p>
-          Ort: Happyland Klosterneuburg<br />
-          Trainingszeiten: Montags und Donnerstags, 20:30–22:00 Uhr<br />
-          Trainingsbeitrag: 6 Euro
-        </p>
-        <p>
-          Minimal 6, maximal 15 Spieler. Wenn möglich, bitte mindestens 28
-          Stunden vor Trainingsbeginn anmelden, ansonsten müssen wir absagen.
-        </p>
-      </div>
+      BK‐Hobby
+      <span id="helpToggle">
+        <i id="iconHelp" class="fas fa-circle-question"></i>
+        <i id="iconIntro" class="hidden fas fa-circle-arrow-left"></i>
+      </span>
+    </h1>
+    <div id="intro" class="centered text">
+      <p>
+        Ort: Happyland Klosterneuburg<br />
+        Trainingszeiten: Montags und Donnerstags, 20:30–22:00 Uhr<br />
+        Trainingsbeitrag: 6 Euro
+      </p>
+      <p>
+        Minimal 6, maximal 15 Spieler. Wenn möglich, bitte mindestens 24 Stunden
+        vor Trainingsbeginn anmelden, ansonsten müssen wir absagen.
+      </p>
+    </div>
+    <div id="help" class="hidden centered text">
+      <p>Some useful instructions here…</p>
+    </div>
+    <div id="login" class="centered">
+        <i id="iconUser" class="fas fa-circle-user"></i> Login
+        &or; Neu <i id="iconUserPlus" class="fas fa-user-plus"></i>
     </div>
 
     <script type="module" src="go.js"></script>
