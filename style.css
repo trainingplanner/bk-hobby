@@ -15,9 +15,10 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
 
-                                       ⁂   
+————————  ⁂   ————————
 
-Credit Solarized colorscheme ☛ <https://ethanschoonover.com/solarized/>
+Solarized colorscheme ☛ <https://ethanschoonover.com/solarized/>
+Fontawesome Free 6.0.4 ☛ <https://fontawesome.com/>
 */
 
 :root {
@@ -48,17 +49,28 @@ body {
   line-height: 1.2em;
   cursor: default;
 }
+
+/* help */
 h1 {
   text-align: center;
   font-size: 2em;
   user-select: none;
 }
-#iconHelp,
-#iconIntro,
-#iconUser,
-#iconUserPlus {
-  color: var(--colorBlue);
+#helpBtn {
+  display: inline-block;
+  vertical-align: -4px;
   cursor: pointer;
+}
+#helpBtn svg path {
+  d: path(
+    "M 16,32 A 16,16 0 1 0 16,0 16,16 0 1 0 16,32 Z M 10.6125,10.33125 C 11.10625,8.9375 12.43125,8 13.9125,8 h 3.64375 C 19.7375,8 21.5,9.76875 21.5,11.94375 c 0,1.4125 -0.75625,2.71875 -1.98125,3.425 L 17.5,16.525 C 17.4875,17.3375 16.81875,18 16,18 15.16875,18 14.5,17.33125 14.5,16.5 v -0.84375 c 0,-0.5375 0.2875,-1.03125 0.75625,-1.3 L 18.025,12.76875 C 18.31875,12.6 18.5,12.2875 18.5,11.95 c 0,-0.525 -0.425,-0.94375 -0.94375,-0.94375 H 13.9125 c -0.2125,0 -0.4,0.13125 -0.46875,0.33125 l -0.025,0.075 c -0.275,0.78125 -1.1375,1.1875 -1.9125,0.9125 -0.775,-0.275 -1.1875,-1.1375 -0.9125,-1.9125 l 0.025,-0.075 z M 14,22 a 2,2 0 1 1 4,0 2,2 0 1 1 -4,0 z"
+  );
+  fill: var(--colorBlue);
+}
+#helpBtn.help svg path {
+  d: path(
+    "M 32,16 A 16,16 0 1 0 0,16 16,16 0 1 0 32,16 Z M 14.4375,7.9375 c 0.5875,-0.5875 1.5375,-0.5875 2.11875,0 0.58125,0.5875 0.5875,1.5375 0,2.11875 l -4.4375,4.4375 L 23.5,14.5 c 0.83125,0 1.5,0.66875 1.5,1.5 0,0.83125 -0.66875,1.5 -1.5,1.5 H 12.11875 l 4.4375,4.4375 c 0.5875,0.5875 0.5875,1.5375 0,2.11875 -0.5875,0.58125 -1.5375,0.5875 -2.11875,0 l -7,-6.99375 C 6.85,16.475 6.85,15.525 7.4375,14.94375 Z"
+  );
 }
 .hidden {
   display: none;
@@ -67,10 +79,10 @@ h1 {
   clear: both;
   max-width: 800px;
   margin: auto;
+  padding: 1.5em;
 }
 .text {
   background: var(--colorAc);
-  padding: 1.5em;
   border-radius: 0.5em;
 }
 .text p:first-of-type {
@@ -79,7 +91,79 @@ h1 {
 .text p:last-of-type {
   margin-block-end: 0em;
 }
-#login {
-  margin-top: 1em;
+
+/* login */
+#loginBtn {
+  display: inline-block;
+  vertical-align: -3px;
+  color: var(--colorFg);
+}
+#loginBtn svg path {
+  d: path("M 18.703125,18.009375 C 17.667187,16.209375 15.721875,15 13.5,15 h -3 C 8.278125,15 6.3328125,16.209375 5.296875,18.009375 6.946875,19.846875 9.3375,21 12,21 c 2.6625,0 5.053125,-1.157812 6.703125,-2.990625 z M 0,12 a 12,12 0 1 1 24,0 12,12 0 1 1 -24,0 z m 12,0.75 A 3.375,3.375 0 1 0 12,6 a 3.375,3.375 0 1 0 0,6.75 z");
+  fill: currentColor;
+}
+.title {
+  user-select: none;
   font-size: 1.5em;
+}
+#login label {
+  font-size: 1.5em;
+}
+input {
+  background: var(--colorBg);
+  color: var(--colorFg);
+  outline: none;
+  border: 2px solid var(--colorBlue);
+  font-family: inherit;
+  font-size: 16px;
+  width: 24ch;
+  vertical-align: middle;
+  margin-top: 0.5em;
+  padding-left: 0.3em;
+}
+input::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}
+input::-webkit-calendar-picker-indicator {
+  color: var(--colorBlue);
+}
+input:focus:valid::-webkit-calendar-picker-indicator {
+  color: var(--colorGreen);
+}
+input:focus:invalid::-webkit-calendar-picker-indicator {
+  color: var(--colorMagenta);
+}
+input:focus:valid {
+  border: 2px solid var(--colorGreen);
+}
+input:focus:invalid {
+  border: 2px solid var(--colorMagenta);
+}
+
+/* calendar */
+#cal.centered {
+  padding-top: 0;
+}
+#calBtn {
+  display: inline-block;
+  vertical-align: -3px;
+  color: var(--colorFg);
+}
+#calBtn svg path {
+  d: path("M 7.5,0 C 8.3296875,0 9,0.6703125 9,1.5 V 3 h 6 V 1.5 C 15,0.6703125 15.670313,0 16.5,0 17.329687,0 18,0.6703125 18,1.5 V 3 h 2.25 c 1.242187,0 2.25,1.0078125 2.25,2.25 V 7.5 H 1.5 V 5.25 C 1.5,4.0078125 2.5078125,3 3.75,3 H 6 V 1.5 C 6,0.6703125 6.6703125,0 7.5,0 Z m -6,9 h 21 V 21.75 C 22.5,22.992187 21.492187,24 20.25,24 H 3.75 C 2.5078125,24 1.5,22.992187 1.5,21.75 Z m 3,3.75 v 1.5 C 4.5,14.6625 4.8375,15 5.25,15 h 1.5 C 7.1625,15 7.5,14.6625 7.5,14.25 v -1.5 C 7.5,12.3375 7.1625,12 6.75,12 H 5.25 C 4.8375,12 4.5,12.3375 4.5,12.75 Z m 6,0 v 1.5 c 0,0.4125 0.3375,0.75 0.75,0.75 h 1.5 c 0.4125,0 0.75,-0.3375 0.75,-0.75 v -1.5 C 13.5,12.3375 13.1625,12 12.75,12 h -1.5 c -0.4125,0 -0.75,0.3375 -0.75,0.75 z M 17.25,12 c -0.4125,0 -0.75,0.3375 -0.75,0.75 v 1.5 c 0,0.4125 0.3375,0.75 0.75,0.75 h 1.5 c 0.4125,0 0.75,-0.3375 0.75,-0.75 v -1.5 C 19.5,12.3375 19.1625,12 18.75,12 Z M 4.5,18.75 v 1.5 C 4.5,20.6625 4.8375,21 5.25,21 h 1.5 C 7.1625,21 7.5,20.6625 7.5,20.25 v -1.5 C 7.5,18.3375 7.1625,18 6.75,18 H 5.25 C 4.8375,18 4.5,18.3375 4.5,18.75 Z M 11.25,18 c -0.4125,0 -0.75,0.3375 -0.75,0.75 v 1.5 c 0,0.4125 0.3375,0.75 0.75,0.75 h 1.5 c 0.4125,0 0.75,-0.3375 0.75,-0.75 v -1.5 C 13.5,18.3375 13.1625,18 12.75,18 Z m 5.25,0.75 v 1.5 c 0,0.4125 0.3375,0.75 0.75,0.75 h 1.5 c 0.4125,0 0.75,-0.3375 0.75,-0.75 v -1.5 C 19.5,18.3375 19.1625,18 18.75,18 h -1.5 c -0.4125,0 -0.75,0.3375 -0.75,0.75 z");
+  fill: currentColor;
+}
+
+/* comments */
+#com.centered {
+  padding-top: 0;
+}
+#comBtn {
+  display: inline-block;
+  vertical-align: -3px;
+  color: var(--colorFg);
+}
+#comBtn svg path {
+  d: path("M 4.1428571,1 C 2.4093749,1 1,2.4093749 1,4.1428567 V 19.857143 C 1,21.590625 2.4093749,23 4.1428571,23 H 19.857143 C 21.590625,23 23,21.590625 23,19.857143 V 4.1428567 C 23,2.4093749 21.590625,1 19.857143,1 Z m 12.8562499,5.2888394 0.707142,0.7071424 c 0.766072,0.766072 0.766072,2.0084826 0,2.7794644 L 16.655357,10.826339 13.168749,7.3397317 14.219643,6.2888394 c 0.766071,-0.7660712 2.008482,-0.7660712 2.779464,0 z M 6.8879464,13.620536 12.054018,8.4544644 l 3.486607,3.4866066 -5.166071,5.161161 c -0.20134,0.201339 -0.4517861,0.34375 -0.7316969,0.4125 l -2.9513392,0.736607 c -0.2700893,0.06875 -0.55,-0.0098 -0.7464286,-0.20625 -0.1964286,-0.196428 -0.275,-0.47634 -0.20625,-0.746428 l 0.7366071,-2.95134 c 0.068749,-0.275 0.2111607,-0.530357 0.4125,-0.731696 z");
+  fill: currentColor;
 }

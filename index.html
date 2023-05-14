@@ -17,20 +17,20 @@ Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <!DOCTYPE html>
-<html>
+<html lang="de">
   <head>
     <title>BK‐Hobby</title>
     <link rel="shortcut icon" type="image/png" href="icons/basketball.ico" />
     <link rel="stylesheet" href="style.css" />
-    <script defer src="icons/fontawesome.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
     <h1>
       BK‐Hobby
-      <span id="helpToggle">
-        <i id="iconHelp" class="fas fa-circle-question"></i>
-        <i id="iconIntro" class="hidden fas fa-circle-arrow-left"></i>
+      <span id="helpBtn" title="Hilfe">
+        <svg viewBox="0 0 32 32" width="32" height="32">
+          <path d="" />
+        </svg>
       </span>
     </h1>
     <div id="intro" class="centered text">
@@ -48,10 +48,47 @@ Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
       <p>Some useful instructions here…</p>
     </div>
     <div id="login" class="centered">
-        <i id="iconUser" class="fas fa-circle-user"></i> Login
-        &or; Neu <i id="iconUserPlus" class="fas fa-user-plus"></i>
+      <span id="loginBtn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="" />
+        </svg>
+      </span>
+      <label for="player-choice" class="title">Anmeldung</label><br />
+      <input
+        list="player-uids"
+        id="player-choice"
+        name="player-choice"
+        type="text"
+        required
+        pattern="(^neu\.)([A-Za-z0-9ÄäÖöÜüß_\.-]{3,20})|(^\d{3})([A-Za-z0-9ÄäÖöÜüß_\.-]{3,20})$"
+        minlength="7"
+        maxlength="24"
+      />
+      <datalist id="player-uids">
+        <option value="neu."></option>
+        <option value="001.Anton"></option>
+        <option value="002.Herbert"></option>
+        <option value="003.Gerhard Schlechtinger"></option>
+      </datalist>
+    </div>
+    <div id="cal" class="centered">
+      <span id="calBtn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="" />
+        </svg>
+      </span>
+      <span class="title">Termine</span>
+    </div>
+    <div id="com" class="centered">
+      <span id="comBtn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="" />
+        </svg>
+      </span>
+      <span class="title">Kommentare</span>
     </div>
 
-    <script type="module" src="go.js"></script>
+    <script type="module" src="db.js"></script>
+    <script src="ui.js"></script>
   </body>
 </html>
