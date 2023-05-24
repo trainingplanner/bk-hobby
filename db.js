@@ -15,13 +15,289 @@
 // You should have received a copy of the GNU General Public License along with
 // Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
 
+// ————————  ⁂   ————————
+
+"use strict";
+
+// write/update event database
+function calSave() {
+  if (_dateInput.value != "") {
+    const epoch = Date.parse(new Date(_dateInput.value).toISOString());
+    update(ref(_db, `bkh/dates/${epoch}`), {
+      bk2: false,
+      cancel: false,
+      players: {},
+    })
+      .then(() => {
+      })
+      .catch((error) => console.error(error));
+  }
+}
+
+// check validity of event input and handle listeners
+function dateInputCheck() {
+  if (_dateInput.validity.valid && _dateListen === false) {
+    _calBtn.style.cursor = "pointer";
+    _calBtn.style.color = "var(--colorGreen)";
+    _calBtn.title = "Änderungen speichern";
+    _calBtn.addEventListener("click", calSave);
+    _dateListen = true;
+  } else if (!_dateInput.validity.valid && _dateListen === true) {
+    _calBtn.style.cursor = "default";
+    _calBtn.style.color = "var(--colorFg)";
+    _calBtn.title = "";
+    _calBtn.removeEventListener("click", calSave);
+    _dateListen = false;
+  }
+}
+
+// load and handle administrative features
+function admin() {
+  _dateInput.classList.remove("hidden");
+  _dateInput.addEventListener("input", dateInputCheck);
+}
+
+// logout and reset
+function logoutPlayer() {
+  if (_playerName === "admin") {
+    _dateInput.classList.add("hidden");
+    _dateInput.value = "";
+    _dateInput.removeEventListener("input", dateInputCheck);
+  }
+  _playerName = "";
+  const loginTitle = document.querySelector("#login span.title");
+  loginTitle.innerHTML = "Anmeldung";
+  loginTitle.style.color = "var(--colorFg)";
+  _loginBtn.removeEventListener("click", logoutPlayer);
+  _loginBtn.style.color = "var(--colorFg)";
+  _loginBtn.style.cursor = "default";
+  _loginBtn.title = "";
+  _loginInput.classList.remove("hidden");
+  _calBtn.style.cursor = "default";
+  _calBtn.style.color = "var(--colorFg)";
+  _calBtn.title = "";
+  _calBtn.removeEventListener("click", calSave);
+}
+
+// login existing player
+function loginPlayer(username) {
+  if (username === "enable.admin") {
+    username = "admin";
+    admin();
+  }
+  _playerName = username;
+  const loginTitle = document.querySelector("#login span.title");
+  loginTitle.innerHTML = _playerName;
+  loginTitle.style.color = "var(--colorBlue)";
+  _loginBtn.removeEventListener("click", submit);
+  _loginBtn.addEventListener("click", logoutPlayer);
+  _loginBtn.style.color = "var(--colorMagenta)";
+  _loginBtn.title = "Abmelden";
+  _loginInput.classList.remove("valid");
+  _loginInput.classList.add("hidden");
+  _loginInput.value = "";
+  _loginInput.removeEventListener("keydown", checkEnter);
+  _loginListen = false;
+}
+
+// create a new player
+function newPlayer(username) {
+  // get key for new player
+  const newPlayerKey = push(child(ref(_db), "bkh/players")).key;
+  // update database and playerlist
+  update(ref(_db, "/bkh/players/" + newPlayerKey), {
+    name: username,
+    bk2: false,
+  })
+    .then(() => {
+      _playerList.unshift(username);
+      playerlist("update");
+      loginPlayer(username);
+    })
+    .catch((error) => console.error(error));
+}
+
+function submit(e, key) {
+  if (key && e.key != "Enter") {
+    return;
+  } else {
+    const input = _loginInput.value;
+    if (input.startsWith("neu ")) newPlayer(input.substring(4));
+    else loginPlayer(input);
+  }
+}
+
+// handle event listener for keyboard enter"
+function checkEnter(event) {
+  submit(event, true);
+}
+
+// validate the login input
+function validate() {
+  const input = _loginInput.value;
+  let check = true;
+  if (input === "enable.admin") console.info("admin validated");
+  else if (_loginInput.value.startsWith("neu ")) {
+    const inputlow = input.substring(4).toLowerCase();
+    for (let i = 0; i < _playerList.length; i++) {
+      if (_playerList[i].toLowerCase() === inputlow) {
+        check = false;
+        break;
+      }
+    }
+    if (inputlow === "enable.admin" || inputlow === "admin") check = false;
+  } else {
+    check = false;
+    for (let i = 0; i < _playerList.length; i++) {
+      if (_playerList[i] === input) {
+        check = true;
+        break;
+      }
+    }
+  }
+  if (_loginInput.validity.valid && _loginListen === false && check === true) {
+    _loginBtn.style.cursor = "pointer";
+    _loginBtn.style.color = "var(--colorGreen)";
+    _loginBtn.title = "Anmelden";
+    _loginBtn.addEventListener("click", submit);
+    _loginInput.classList.add("valid");
+    _loginInput.addEventListener("keydown", checkEnter);
+    _loginListen = true;
+  } else if (
+    (!_loginInput.validity.valid && _loginListen === true) ||
+    (_loginListen === true && check === false)
+  ) {
+    _loginBtn.style.cursor = "default";
+    _loginBtn.style.color = "var(--colorFg)";
+    _loginBtn.title = "";
+    _loginBtn.removeEventListener("click", submit);
+    _loginInput.classList.remove("valid");
+    _loginInput.removeEventListener("keydown", checkEnter);
+    _loginListen = false;
+  }
+}
+
+// toggle info/help
+function help() {
+  const intro = document.getElementById("intro");
+  const help = document.getElementById("help");
+  if (help.classList.contains("hidden")) {
+    intro.classList.add("hidden");
+    help.classList.remove("hidden");
+    _helpToggle.classList.add("help");
+    _helpToggle.title = "Info";
+  } else {
+    help.classList.add("hidden");
+    intro.classList.remove("hidden");
+    _helpToggle.classList.remove("help");
+    _helpToggle.title = "Hilfe";
+  }
+}
+
+// define the login datalist entries
+function playerlist(players) {
+  if (players !== "update") {
+    _playerList = players.map(({ name }) => name).reverse();
+  }
+  const list = document.getElementById("players");
+  list.innerHTML = `<option value="neu "></option>`;
+  _playerList.forEach((player) => {
+    const option = document.createElement("option");
+    option.value = player;
+    list.appendChild(option);
+  });
+}
+
+// convert epoch time to local time
+function ISOtoLocal(epoch) {
+  const date = new Date(Number(epoch));
+  let local = date.toLocaleDateString("de-DE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "2-digit",
+  });
+  const long = date.toLocaleDateString("de-DE", {
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+  local = local.slice(0, 3) + local.slice(5);
+  return { local: local, long: long };
+}
+
+// load the events
+function datelist(dates) {
+  const eventcontainer = document.getElementById("events");
+  dates.forEach((date) => {
+    const time = ISOtoLocal(date.key);
+    console.log(time);
+    const event = document.createElement("div");
+    event.id = date.key
+    event.classList.add("event");
+    event.innerHTML = `
+      <div class="event-display">
+        <input type="checkbox" class="check"></input>
+        <span class="player-count">${time.local}[ 5+2 ]</span>
+        <button class="dropBtn" title="Info">
+          <svg viewBox="0 0 16 16" width="16" height="16">
+            <path d="" />
+          </svg>
+        </button>
+      </div>
+      <div class="event-info hidden">
+        <span class="date-long">${time.long}</span>
+      </div>
+    `;
+    eventcontainer.appendChild(event);
+  });
+}
+
+// create an array to work with
 function snapshotToArray(snapshot) {
   let arr = [];
-  snapshot.forEach(function (child) {
+  snapshot.forEach(function(child) {
     const item = child.val();
+    item.key = child.key;
     arr.push(item);
   });
   return arr;
+}
+
+// check connection
+function connection() {
+  const connection = document.getElementById("connection");
+  onValue(ref(_db, ".info/connected"), (snap) => {
+    if (snap.val() === true) {
+      connection.style.color = "var(--colorGreen)";
+      connection.innerHTML = "Datenbank verbunden";
+    } else {
+      connection.style.color = "var(--colorMagenta)";
+      connection.innerHTML = "Datenbank nicht verbunden";
+    }
+  });
+}
+
+// load database
+function setup() {
+  // load player data
+  get(child(ref(getDatabase(_app)), "bkh"))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const players = snapshotToArray(snapshot.child("players"));
+        playerlist(players);
+        const dates = snapshotToArray(snapshot.child("dates"));
+        datelist(dates);
+        console.info(dates);
+        console.info(players);
+      } else {
+        console.info("No data available");
+      }
+    })
+    .catch((error) => console.error(error));
 }
 
 // setup firebase
@@ -29,7 +305,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase
 import {
   getDatabase,
   ref,
+  onValue,
   push,
+  update,
   get,
   child,
 } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
@@ -43,24 +321,22 @@ const firebaseConfig = {
   messagingSenderId: "636511129226",
   appId: "1:636511129226:web:51fc3df29c0425ed3fe773",
 };
+const _app = initializeApp(firebaseConfig);
+const _db = getDatabase();
+let _playerList = {};
+let _playerName = "";
 
-// load database
-const app = initializeApp(firebaseConfig);
-const dbRef = ref(getDatabase(app));
-get(child(dbRef, "bkh/"))
-  .then((snapshot) => {
-    if (snapshot.exists()) {
-      const dbArr = snapshotToArray(snapshot);
-      const dates = dbArr[0];
-      const players = dbArr[1];
-      Object.keys(dates).forEach((date) => {
-        console.info(date);
-      });
-      console.info(players);
-    } else {
-      console.info("No data available");
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+const _helpToggle = document.getElementById("helpBtn");
+_helpToggle.addEventListener("click", help);
+
+const _loginBtn = document.getElementById("loginBtn");
+const _loginInput = document.getElementById("login-input");
+let _loginListen = false;
+_loginInput.addEventListener("input", validate);
+
+const _calBtn = document.getElementById("calBtn");
+const _dateInput = document.getElementById("date-input");
+let _dateListen = false;
+
+setup();
+connection();

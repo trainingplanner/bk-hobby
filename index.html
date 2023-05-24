@@ -14,8 +14,9 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
--->
 
+————————  ⁂  ————————
+-->
 <!DOCTYPE html>
 <html lang="de">
   <head>
@@ -27,13 +28,14 @@ Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
   <body>
     <h1>
       BK‐Hobby
-      <span id="helpBtn" title="Hilfe">
+      <button id="helpBtn" title="Hilfe">
         <svg viewBox="0 0 32 32" width="32" height="32">
           <path d="" />
         </svg>
-      </span>
+      </button>
     </h1>
     <div id="intro" class="centered text">
+      <p>Status: <span id="connection" /></p>
       <p>
         Ort: Happyland Klosterneuburg<br />
         Trainingszeiten: Montags und Donnerstags, 20:30–22:00 Uhr<br />
@@ -48,47 +50,45 @@ Trainingplanner. If not, see <https://www.gnu.org/licenses/>.
       <p>Some useful instructions here…</p>
     </div>
     <div id="login" class="centered">
-      <span id="loginBtn">
+      <button id="loginBtn">
         <svg viewBox="0 0 24 24" width="24" height="24">
           <path d="" />
         </svg>
-      </span>
-      <label for="player-choice" class="title">Anmeldung</label><br />
+      </button>
+      <span class="title">Anmeldung</span><br />
       <input
-        list="player-uids"
-        id="player-choice"
-        name="player-choice"
+        list="players"
+        id="login-input"
         type="text"
         required
-        pattern="(^neu\.)([A-Za-z0-9ÄäÖöÜüß_\.-]{3,20})|(^\d{3})([A-Za-z0-9ÄäÖöÜüß_\.-]{3,20})$"
-        minlength="7"
+        pattern="(^neu\x20)([A-Za-z0-9ÄäÖöÜüß_.\-]{3,20})|([A-Za-z0-9ÄäÖöÜüß_.\-]{3,20})$"
         maxlength="24"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
       />
-      <datalist id="player-uids">
-        <option value="neu."></option>
-        <option value="001.Anton"></option>
-        <option value="002.Herbert"></option>
-        <option value="003.Gerhard Schlechtinger"></option>
-      </datalist>
+      <datalist id="players"> </datalist>
     </div>
     <div id="cal" class="centered">
-      <span id="calBtn">
+      <button id="calBtn">
         <svg viewBox="0 0 24 24" width="24" height="24">
           <path d="" />
         </svg>
-      </span>
-      <span class="title">Termine</span>
+      </button>
+      <span class="title">Termine</span><br />
+      <input id="date-input" class="hidden" type="datetime-local" required></input>
+      <div id="events"></div>
     </div>
     <div id="com" class="centered">
-      <span id="comBtn">
+      <button id="comBtn">
         <svg viewBox="0 0 24 24" width="24" height="24">
           <path d="" />
         </svg>
-      </span>
+      </button>
       <span class="title">Kommentare</span>
     </div>
 
     <script type="module" src="db.js"></script>
-    <script src="ui.js"></script>
   </body>
 </html>
