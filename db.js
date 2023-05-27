@@ -29,6 +29,11 @@ function calSave() {
       players: {},
     })
       .then(() => {
+        _calBtn.style = "";
+        _calBtn.title = "";
+        _calBtn.removeEventListener("click", calSave);
+        _dateInput.value = "";
+        _dateListen = false;
       })
       .catch((error) => console.error(error));
   }
@@ -43,8 +48,7 @@ function dateInputCheck() {
     _calBtn.addEventListener("click", calSave);
     _dateListen = true;
   } else if (!_dateInput.validity.valid && _dateListen === true) {
-    _calBtn.style.cursor = "default";
-    _calBtn.style.color = "var(--colorFg)";
+    _calBtn.style = "";
     _calBtn.title = "";
     _calBtn.removeEventListener("click", calSave);
     _dateListen = false;
@@ -67,14 +71,12 @@ function logoutPlayer() {
   _playerName = "";
   const loginTitle = document.querySelector("#login span.title");
   loginTitle.innerHTML = "Anmeldung";
-  loginTitle.style.color = "var(--colorFg)";
+  loginTitle.style = "";
   _loginBtn.removeEventListener("click", logoutPlayer);
-  _loginBtn.style.color = "var(--colorFg)";
-  _loginBtn.style.cursor = "default";
+  _loginBtn.style = "";
   _loginBtn.title = "";
   _loginInput.classList.remove("hidden");
-  _calBtn.style.cursor = "default";
-  _calBtn.style.color = "var(--colorFg)";
+  _calBtn.style = "";
   _calBtn.title = "";
   _calBtn.removeEventListener("click", calSave);
 }
@@ -167,8 +169,7 @@ function validate() {
     (!_loginInput.validity.valid && _loginListen === true) ||
     (_loginListen === true && check === false)
   ) {
-    _loginBtn.style.cursor = "default";
-    _loginBtn.style.color = "var(--colorFg)";
+    _loginBtn.style = "";
     _loginBtn.title = "";
     _loginBtn.removeEventListener("click", submit);
     _loginInput.classList.remove("valid");
@@ -194,6 +195,13 @@ function help() {
   }
 }
 
+// toggle additional event information and settings
+function toggleEventInfo() {
+  const info = this.parentNode.nextElementSibling;
+  if (info.classList.contains("hidden")) info.classList.remove("hidden");
+  else info.classList.add("hidden");
+}
+
 // define the login datalist entries
 function playerlist(players) {
   if (players !== "update") {
@@ -209,13 +217,14 @@ function playerlist(players) {
 }
 
 // convert epoch time to local time
-function ISOtoLocal(epoch) {
+function isoToLocal(epoch) {
   const date = new Date(Number(epoch));
   let local = date.toLocaleDateString("de-DE", {
     weekday: "short",
     day: "2-digit",
     month: "2-digit",
   });
+  local = local.slice(0, 3) + local.slice(5);
   const long = date.toLocaleDateString("de-DE", {
     weekday: "long",
     day: "2-digit",
@@ -225,7 +234,6 @@ function ISOtoLocal(epoch) {
     minute: "2-digit",
     timeZoneName: "short",
   });
-  local = local.slice(0, 3) + local.slice(5);
   return { local: local, long: long };
 }
 
@@ -233,33 +241,71 @@ function ISOtoLocal(epoch) {
 function datelist(dates) {
   const eventcontainer = document.getElementById("events");
   dates.forEach((date) => {
-    const time = ISOtoLocal(date.key);
+    const time = isoToLocal(date.key);
     console.log(time);
     const event = document.createElement("div");
-    event.id = date.key
+    event.id = date.key;
     event.classList.add("event");
     event.innerHTML = `
       <div class="event-display">
-        <input type="checkbox" class="check"></input>
-        <span class="player-count">${time.local}[ 5+2 ]</span>
-        <button class="dropBtn" title="Info">
-          <svg viewBox="0 0 16 16" width="16" height="16">
+        <label class="hidden">
+          <input type="checkbox" disabled/>
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path d="" />
+          </svg>
+        </label>
+        <span class="player-count">${time.local}<span style="color: var(--colorYellow)"> [ 0 ]</span></span>
+        <button class="drop">
+          <svg viewBox="0 0 24 24" width="24" height="24">
             <path d="" />
           </svg>
         </button>
       </div>
-      <div class="event-info hidden">
-        <span class="date-long">${time.long}</span>
+      <div class="event-info-container text hidden">
+        <div class="event-info">
+        <p class="head">${time.long}</p>
+        </div>
+        <div class="event-options">
+          <span class="head">Optionen</span><br />
+          <label class="radio" for="radio6-${date.key}">
+            <input type="radio" name="option-${date.key}" id="radio6-${date.key}" value="6">
+            <svg viewBox="0 0 18 18" width="18" height="18">
+              <path d="" />
+            </svg>
+            <span>6</span>
+          </label>
+          <label class="radio" for="radio8-${date.key}">
+            <input type="radio" name="option-${date.key}" id="radio8-${date.key}" value="8">
+            <svg viewBox="0 0 18 18" width="18" height="18">
+              <path d="" />
+            </svg>
+            <span>8</span>
+          </label>
+          <label class="radio" for="radio10-${date.key}">
+            <input type="radio" name="option-${date.key}" id="radio10-${date.key}" value="10">
+            <svg viewBox="0 0 18 18" width="18" height="18">
+              <path d="" />
+            </svg>
+            <span>10</span>
+          </label>
+        </div>
+        <div class="event-players">
+          <span class="head">Spieler</span>
+        </div>
       </div>
     `;
     eventcontainer.appendChild(event);
   });
+  const drop = document.querySelectorAll(".drop");
+  for (let i = 0; i < drop.length; i++) {
+    drop[i].addEventListener("click", toggleEventInfo);
+  }
 }
 
 // create an array to work with
 function snapshotToArray(snapshot) {
   let arr = [];
-  snapshot.forEach(function(child) {
+  snapshot.forEach(function (child) {
     const item = child.val();
     item.key = child.key;
     arr.push(item);
