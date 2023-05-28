@@ -244,7 +244,7 @@ h1 {
   align-self: center;
 }
 .event-info-container {
-  padding: 0.5em 0.5em 1em;
+  padding: 0.5em 0.5em;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -256,14 +256,30 @@ h1 {
   font-weight: bold;
   color: var(--colorFg8);
 }
-.event-options input,
-.event-options input:checked {
+.event-info {
+  padding-left: 0.5em;
+}
+.event-info[contenteditable="true"] {
+  outline: 1px solid var(--colorBlue);
+}
+.player-options {
+  display: flex;
+  align-items: flex-start;
+}
+.player-options input,
+.player-options input:checked {
   display: none;
 }
 .radio {
+  display: flex;
+  margin: 0 0.5em;
   cursor: pointer;
   color: var(--colorBlue);
   font-weight: bold;
+}
+.radio span {
+  align-self: center;
+  margin-left: 0.2em;
 }
 .radio input + svg path {
   d: path(

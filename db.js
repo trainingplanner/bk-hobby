@@ -26,7 +26,8 @@ function calSave() {
     update(ref(_db, `bkh/dates/${epoch}`), {
       bk2: false,
       cancel: false,
-      players: {},
+      info: "",
+      players: "",
     })
       .then(() => {
         _calBtn.style = "";
@@ -242,7 +243,6 @@ function datelist(dates) {
   const eventcontainer = document.getElementById("events");
   dates.forEach((date) => {
     const time = isoToLocal(date.key);
-    console.log(time);
     const event = document.createElement("div");
     event.id = date.key;
     event.classList.add("event");
@@ -262,32 +262,35 @@ function datelist(dates) {
         </button>
       </div>
       <div class="event-info-container text hidden">
-        <div class="event-info">
-        <p class="head">${time.long}</p>
+        <div>
+          <div class="head">${time.long}</div>
+          <p class="event-info" contenteditable="false"></p>
         </div>
-        <div class="event-options">
+        <div class="event-options hidden">
           <span class="head">Optionen</span><br />
-          <label class="radio" for="radio6-${date.key}">
-            <input type="radio" name="option-${date.key}" id="radio6-${date.key}" value="6">
-            <svg viewBox="0 0 18 18" width="18" height="18">
-              <path d="" />
-            </svg>
-            <span>6</span>
-          </label>
-          <label class="radio" for="radio8-${date.key}">
-            <input type="radio" name="option-${date.key}" id="radio8-${date.key}" value="8">
-            <svg viewBox="0 0 18 18" width="18" height="18">
-              <path d="" />
-            </svg>
-            <span>8</span>
-          </label>
-          <label class="radio" for="radio10-${date.key}">
-            <input type="radio" name="option-${date.key}" id="radio10-${date.key}" value="10">
-            <svg viewBox="0 0 18 18" width="18" height="18">
-              <path d="" />
-            </svg>
-            <span>10</span>
-          </label>
+          <div class="player-options">
+            <label class="radio" for="radio6-${date.key}">
+              <input type="radio" name="option-${date.key}" id="radio6-${date.key}" value="6">
+              <svg viewBox="0 0 18 18" width="18" height="18">
+                <path d="" />
+              </svg>
+              <span>6</span>
+            </label>
+            <label class="radio" for="radio8-${date.key}">
+              <input type="radio" name="option-${date.key}" id="radio8-${date.key}" value="8">
+              <svg viewBox="0 0 18 18" width="18" height="18">
+                <path d="" />
+              </svg>
+              <span>8</span>
+            </label>
+            <label class="radio" for="radio10-${date.key}">
+              <input type="radio" name="option-${date.key}" id="radio10-${date.key}" value="10">
+              <svg viewBox="0 0 18 18" width="18" height="18">
+                <path d="" />
+              </svg>
+              <span>10</span>
+            </label>
+          </div>
         </div>
         <div class="event-players">
           <span class="head">Spieler</span>
