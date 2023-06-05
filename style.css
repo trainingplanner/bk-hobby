@@ -60,6 +60,9 @@ button {
 button:focus-visible {
   outline: 2px solid var(--colorBlue);
 }
+button, input, label {
+  -webkit-tap-highlight-color: transparent;
+}
 .hidden {
   display: none;
 }
@@ -200,21 +203,24 @@ h1 {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  border: 1px solid var(--colorYellow);
+  border: 1px solid;
   font-weight: bold;
 }
 .event-display label,
 .event-display button {
   height: 100%;
   aspect-ratio: 1 / 1;
-  color: var(--colorBlue);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: unset;
+  cursor: pointer;
 }
+/*
 .event-display label {
   opacity: 0;
 }
+*/
 .event-display input,
 .event-display input:disabled {
   display: none;
@@ -231,14 +237,11 @@ h1 {
   );
   fill: currentColor;
 }
-.drop {
-  cursor: pointer;
-}
 .drop svg path {
   d: path(
     "m 11.011179,15.789904 c 0.546648,0.546645 1.434402,0.546645 1.981049,0 l 5.597665,-5.597666 C 18.992225,9.789909 19.110301,9.190779 18.891642,8.6660045 18.672984,8.1412223 18.165696,7.8001123 17.597182,7.8001123 L 6.4018512,7.804779 c -0.5641398,0 -1.0758014,0.34111 -1.2944602,0.8658922 -0.2186588,0.5247822 -0.09621,1.1239044 0.3017492,1.5262408 l 5.5976658,5.597658 z"
   );
-  fill: var(--colorYellow);
+  fill: currentColor;
 }
 .player-count {
   align-self: center;
@@ -262,34 +265,59 @@ h1 {
 .event-info[contenteditable="true"] {
   outline: 1px solid var(--colorBlue);
 }
-.player-options {
+.event-options > div {
   display: flex;
   align-items: flex-start;
 }
-.player-options input,
-.player-options input:checked {
+.event-options input,
+.event-options input:checked {
   display: none;
 }
-.radio {
+.event-options label {
   display: flex;
   margin: 0 0.5em;
   cursor: pointer;
   color: var(--colorBlue);
   font-weight: bold;
 }
-.radio span {
+.event-options label span {
   align-self: center;
   margin-left: 0.2em;
 }
-.radio input + svg path {
+.player-options.hidden,
+.admin-options.hidden {
+  display: none;
+}
+.player-options input + svg path {
   d: path(
     "M 16.3125,9 A 7.3125,7.3125 0 1 0 1.6875,9 7.3125,7.3125 0 1 0 16.3125,9 Z M 0,9 A 9,9 0 1 1 18,9 9,9 0 1 1 0,9 Z"
   );
   fill: currentColor;
 }
-.radio input:checked + svg path {
+.player-options input:checked + svg path {
   d: path(
     "M 9,18 A 9,9 0 1 0 9,0 9,9 0 1 0 9,18 Z M 9,5.625 a 3.375,3.375 0 1 1 0,6.75 3.375,3.375 0 1 1 0,-6.75 z"
+  );
+  fill: currentColor;
+}
+.checkcancel {
+  color: var(--colorMagenta) !important;
+}
+.admin-options input + svg path {
+  d: path(
+    "m 15.428571,1.928571 c 0.353572,0 0.642858,0.289286 0.642858,0.642858 v 12.857142 c 0,0.353572 -0.289286,0.642858 -0.642858,0.642858 H 2.5714286 c -0.3535715,0 -0.6428572,-0.289286 -0.6428572,-0.642858 V 2.571429 c 0,-0.353572 0.2892857,-0.642858 0.6428572,-0.642858 z M 2.5714286,0 C 1.153125,0 0,1.153125 0,2.571429 V 15.428571 C 0,16.846875 1.153125,18 2.5714286,18 H 15.428571 C 16.846875,18 18,16.846875 18,15.428571 V 2.571429 C 18,1.153125 16.846875,0 15.428571,0 Z"
+  );
+  fill: currentColor;
+}
+.checkbk2 input:checked + svg path {
+  d: path(
+    "M 2.5714286,0 C 1.153125,0 4.9999999e-8,1.153125 4.9999999e-8,2.571429 V 15.428571 C 4.9999999e-8,16.846875 1.153125,18 2.5714286,18 H 15.428571 C 16.846875,18 18,16.846875 18,15.428571 V 2.571429 C 18,1.153125 16.846875,0 15.428571,0 Z M 13.540179,7.111607 8.397322,12.254464 c -0.377679,0.377679 -0.988393,0.377679 -1.362054,0 L 4.4638393,9.683036 c -0.3776786,-0.377679 -0.3776786,-0.988393 0,-1.362054 0.3776786,-0.373661 0.9883929,-0.377678 1.3620536,0 l 1.8883931,1.888393 4.459821,-4.463839 c 0.377679,-0.377679 0.988393,-0.377679 1.362054,0 0.37366,0.377678 0.377678,0.988393 0,1.362053 z"
+  );
+  fill: currentColor;
+}
+.checkcancel input:checked + svg path {
+  d: path(
+    "M 2.5714286,0 C 1.153125,0 0,1.153125 0,2.571429 V 15.428571 C 0,16.846875 1.153125,18 2.5714286,18 H 15.428571 C 16.846875,18 18,16.846875 18,15.428571 V 2.571429 C 18,1.153125 16.846875,0 15.428571,0 Z m 3.1741071,5.745536 c 0.3776786,-0.377679 0.9883929,-0.377679 1.3620533,0 l 1.888393,1.888393 1.888393,-1.888393 c 0.377679,-0.377679 0.988393,-0.377679 1.362054,0 0.37366,0.377678 0.377678,0.988393 0,1.362053 l -1.888393,1.888393 1.888393,1.888393 c 0.377678,0.377679 0.377678,0.988393 0,1.362054 -0.377679,0.37366 -0.988393,0.377678 -1.362054,0 L 8.995982,10.358036 7.107589,12.246429 c -0.3776783,0.377678 -0.9883926,0.377678 -1.3620533,0 -0.3736607,-0.377679 -0.3776786,-0.988393 0,-1.362054 L 7.633929,8.995982 5.7455357,7.107589 c -0.3776786,-0.377678 -0.3776786,-0.988393 0,-1.362053 z"
   );
   fill: currentColor;
 }

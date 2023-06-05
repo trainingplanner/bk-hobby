@@ -21,9 +21,9 @@
 
 // write/update event database
 function calSave() {
-  if (_dateInput.value != "") {
+  if ( _username === "admin" && _dateInput.value != "") {
     const epoch = Date.parse(new Date(_dateInput.value).toISOString());
-    update(ref(_db, `bkh/dates/${epoch}`), {
+    update(ref(_db, `/dates/${epoch}`), {
       bk2: false,
       cancel: false,
       info: "",
@@ -106,9 +106,9 @@ function loginPlayer(username) {
 // create a new player
 function newPlayer(username) {
   // get key for new player
-  const newPlayerKey = push(child(ref(_db), "bkh/players")).key;
+  const newPlayerKey = push(child(ref(_db), "players")).key;
   // update database and playerlist
-  update(ref(_db, "/bkh/players/" + newPlayerKey), {
+  update(ref(_db, "/players/" + newPlayerKey), {
     name: username,
     bk2: false,
   })
@@ -238,23 +238,65 @@ function isoToLocal(epoch) {
   return { local: local, long: long };
 }
 
+// add registered players to events, calculate the count and color code it
+function loadPlayers() {
+  _dates.forEach((date) => {
+    let bc6 = 0;
+    let bc8 = 0;
+    let bc10 = 0;
+    const clean = document.querySelector(`#d${date.key} .clean`);
+    if (clean) clean.remove();
+    const target = document.querySelector(`#d${date.key} .event-players`);
+    const list = document.createElement("div");
+    list.style.padding = "0 0.5em";
+    list.classList.add("clean");
+    if (!Object.entries(date.players).length > 0) {
+      const empty = document.createElement("span");
+      empty.innerHTML = String.fromCodePoint(0x1f47f);
+      list.appendChild(empty);
+    } else {
+      for (let [name, bc] of Object.entries(date.players)) {
+        if (bc === "bc6") bc6++;
+        else if (bc === "bc8") {
+          bc8++;
+          name = name + "(8)";
+        } else if (bc === "bc10") {
+          bc10++;
+          name = name + "(10)";
+        }
+        const entry = document.createElement("span");
+        entry.innerHTML = `${name} `;
+        entry.classList.add(bc);
+        list.appendChild(entry);
+      }
+    }
+    target.appendChild(list);
+    let maincolor = "fail";
+    if (bc6 >= 6) maincolor = "s6";
+    if (bc6 + bc8 >= 8) maincolor = "s8";
+    if (bc6 + bc8 + bc10 >= 10) maincolor = "s10";
+    document.getElementById(`d${date.key}`).classList.add(maincolor);
+  });
+}
+
 // load the events
-function datelist(dates) {
+function datelist() {
   const eventcontainer = document.getElementById("events");
-  dates.forEach((date) => {
+  _dates.forEach((date) => {
     const time = isoToLocal(date.key);
     const event = document.createElement("div");
-    event.id = date.key;
+    event.id = "d" + date.key;
     event.classList.add("event");
+    if (date.bk2 === true) event.classList.add("hidden");
     event.innerHTML = `
       <div class="event-display">
-        <label class="hidden">
-          <input type="checkbox" disabled/>
+        <label>
+          <input type="checkbox"/>
           <svg viewBox="0 0 24 24" width="24" height="24">
             <path d="" />
           </svg>
         </label>
-        <span class="player-count">${time.local}<span style="color: var(--colorYellow)"> [ 0 ]</span></span>
+        <span class="player-count">${time.local}<span> [ 0 ]</span></span>
         <button class="drop">
           <svg viewBox="0 0 24 24" width="24" height="24">
             <path d="" />
@@ -266,29 +308,45 @@ function datelist(dates) {
           <div class="head">${time.long}</div>
           <p class="event-info" contenteditable="false"></p>
         </div>
-        <div class="event-options hidden">
+        <div class="event-options">
           <span class="head">Optionen</span><br />
           <div class="player-options">
-            <label class="radio" for="radio6-${date.key}">
+            <label for="radio6-${date.key}">
               <input type="radio" name="option-${date.key}" id="radio6-${date.key}" value="6">
               <svg viewBox="0 0 18 18" width="18" height="18">
                 <path d="" />
               </svg>
               <span>6</span>
             </label>
-            <label class="radio" for="radio8-${date.key}">
+            <label for="radio8-${date.key}">
               <input type="radio" name="option-${date.key}" id="radio8-${date.key}" value="8">
               <svg viewBox="0 0 18 18" width="18" height="18">
                 <path d="" />
               </svg>
               <span>8</span>
             </label>
-            <label class="radio" for="radio10-${date.key}">
+            <label for="radio10-${date.key}">
               <input type="radio" name="option-${date.key}" id="radio10-${date.key}" value="10">
               <svg viewBox="0 0 18 18" width="18" height="18">
                 <path d="" />
               </svg>
               <span>10</span>
+            </label>
+          </div>
+          <div class="admin-options">
+            <label class="checkbk2">
+              <input type="checkbox"/>
+              <svg viewBox="0 0 18 18" width="18" height="18">
+                <path d="" />
+              </svg>
+              <span>BK2</span>
+            </label>
+            <label class="checkcancel">
+              <input type="checkbox"/>
+              <svg viewBox="0 0 18 18" width="18" height="18">
+                <path d="" />
+              </svg>
+              <span>Absage</span>
             </label>
           </div>
         </div>
@@ -303,6 +361,7 @@ function datelist(dates) {
   for (let i = 0; i < drop.length; i++) {
     drop[i].addEventListener("click", toggleEventInfo);
   }
+  loadPlayers();
 }
 
 // create an array to work with
@@ -316,37 +375,51 @@ function snapshotToArray(snapshot) {
   return arr;
 }
 
-// check connection
-function connection() {
-  const connection = document.getElementById("connection");
-  onValue(ref(_db, ".info/connected"), (snap) => {
-    if (snap.val() === true) {
-      connection.style.color = "var(--colorGreen)";
-      connection.innerHTML = "Datenbank verbunden";
-    } else {
-      connection.style.color = "var(--colorMagenta)";
-      connection.innerHTML = "Datenbank nicht verbunden";
-    }
-  });
-}
-
 // load database
 function setup() {
   // load player data
-  get(child(ref(getDatabase(_app)), "bkh"))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        const players = snapshotToArray(snapshot.child("players"));
-        playerlist(players);
-        const dates = snapshotToArray(snapshot.child("dates"));
-        datelist(dates);
-        console.info(dates);
+  get(child(ref(getDatabase(_app)), "players"))
+    .then((snap) => {
+      if (snap.exists()) {
+        const players = snapshotToArray(snap);
         console.info(players);
+        playerlist(players);
       } else {
         console.info("No data available");
       }
     })
     .catch((error) => console.error(error));
+  // load calendar
+  get(child(ref(getDatabase(_app)), "dates"))
+    .then((snap) => {
+      if (snap.exists()) {
+        _dates = snapshotToArray(snap);
+        console.info(_dates);
+        datelist();
+      } else {
+        console.info("No data available");
+      }
+    })
+    .catch((error) => console.error(error));
+}
+
+// check connection and init
+function connection() {
+  const connection = document.getElementById("connection");
+  let go = true;
+  onValue(ref(_db, ".info/connected"), (snap) => {
+    if (snap.val() === true) {
+      connection.style.color = "var(--colorGreen)";
+      connection.innerHTML = "Datenbank verbunden";
+      if (go === true) {
+        setup();
+        go = false;
+      }
+    } else {
+      connection.style.color = "var(--colorMagenta)";
+      connection.innerHTML = "Datenbank nicht verbunden";
+    }
+  });
 }
 
 // setup firebase
@@ -374,6 +447,7 @@ const _app = initializeApp(firebaseConfig);
 const _db = getDatabase();
 let _playerList = {};
 let _playerName = "";
+let _dates = {};
 
 const _helpToggle = document.getElementById("helpBtn");
 _helpToggle.addEventListener("click", help);
@@ -387,5 +461,4 @@ const _calBtn = document.getElementById("calBtn");
 const _dateInput = document.getElementById("date-input");
 let _dateListen = false;
 
-setup();
 connection();
